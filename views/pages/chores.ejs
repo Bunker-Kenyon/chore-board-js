@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/stickyNotes.css">
+    <title>Chore Board</title>
+</head>
+
+<body>
+    <div class="jumbotron" id="top">
+        <h1>Family Chores and To do Board</h1>
+    </div>
+    <h1>Unassigned chores</h1>
+    <ul>
+        <% data.forEach(function(chore) { %>
+            <li>
+                <a href="#">
+                    <h2>
+                        <%= chore.chore_name %>
+                    </h2>
+                    <p>
+                        <%= chore.description %>
+                    </p>
+                </a>
+            </li>
+        <% }); %>
+    </ul>
+    
+</body>
+
+</html>
