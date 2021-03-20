@@ -2,31 +2,27 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/css/stickyNotes.css">
-    <title>Chore Board</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="/css/stickyNotes.css">
+  <title>Chore Board</title>
 </head>
 
 <body>
-    <div class="jumbotron" id="top">
-        <h1>Family Chores and To do Board</h1>
-    </div>
-    <h1>Unassigned chores</h1>
-    <ul>
-        <% data.forEach(function(chore) { %>
-            <li>
-                <a href="#">
-                    <h2>
-                        <%= chore.chore_name %>
-                    </h2>
-                    <p>
-                        <%= chore.description %>
-                    </p>
-                </a>
-            </li>
-        <% }); %>
+  <div class="jumbotron" id="top">
+    <h1>Family Chores and To do Board</h1>
+  </div>
+  <form action="" method="POST">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" href="#">Main Chore Board</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/getChoreLibrary">Chore and Reward Library</a>
+      </li>
     </ul>
-    
+  </form>
+    <%- include('../partials/chores'); %>
+    <%- include('../partials/myChores'); %>
 </body>
 
 </html>

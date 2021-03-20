@@ -70,3 +70,14 @@ SELECT chore_library.chore_library_id, chore_library.chore_name, chore_library.d
     ON chore_library.household_id=household.household_id
     Where household.household_id = 1
     ORDER BY chore_library.chore_name;
+
+--Select user for login
+SELECT id, email, password, household_id FROM public.users WHERE email = :email
+
+--Get unnassigned chores
+SELECT * FROM chores
+WHERE household_id = 1 AND assigned_to_user_id IS NULL;
+
+--Get Current User ID
+SELECT * FROM chores
+WHERE household_id = 1 AND assigned_to_user_id = 1;

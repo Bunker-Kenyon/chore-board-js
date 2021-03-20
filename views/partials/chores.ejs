@@ -1,0 +1,22 @@
+<h1>Unassigned chores</h1>
+<ul class="sticky">
+    
+    <% data.forEach(function(chore) { %>
+        <% if(chore.user_id != null)  { %>
+        <li>
+            <a href="#">
+                <h2>
+                    <%= chore.chore_name %>
+                </h2>
+                <p>
+                    <%= chore.description %>
+                </p>
+                <p>
+                    XP: <%= chore.xp_reward %>
+                </p>
+                
+            </a>
+        </li>
+        <% } %>
+    <% }); %>
+</ul>
