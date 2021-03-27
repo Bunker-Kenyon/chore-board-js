@@ -6,22 +6,14 @@
     <link rel="stylesheet" type="text/css" href="/css/stickyNotes.css">
     <title>Chore Board</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- <script>
-        $(document).ready(function () {
-            $.get("/getChoreLibraryData", function (chores) {
-                alert("Chores: " + JSON.stringify(chores));
-            });
-        });
-    </script> -->
-
-
+    <script src="library.js"></script>
 </head>
 
-<body>
+<body onload="populatePage()">
     <div class="jumbotron" id="top">
         <h1>Reward and Chore Library</h1>
     </div>
-    <h1>Page under construction. Buttons, textboxes and drop downs not functional.</h1>
+    <h1>Page under construction. "Update" buttons not functional.</h1>
     <form action="" method="POST">
         <ul class="nav nav-tabs">
             <li class="nav-item">
@@ -35,74 +27,9 @@
     <h1>Rewards</h1>
     <div id="rewardsContainer">
     </div>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $.ajax({
-                dataType: 'json',
-                url: "/getRewardLibraryData",
-                type: 'get',
-
-                success: function (data) {
-                    var i = 0;
-                    var table = '<table class="table"><tr><th>Chore</th><th>Description<th>Action</th></tr>';
-                    $.each(data, function (key, obj) {
-                        table += ('<tr>');
-                        table += ('<td>' + obj.reward_name + '</td>');
-                        table += ('<td>' + obj.description + '</td>');
-                        table += ('<td><button type=\"submit\" class=\"btn btn-danger\" name=$rewardID>Delete</button><span> - </span><button type=\"submit\" class=\"btn btn-warning\" name=$rewardUpdateBtn>Update</button></td>');
-                        table += ('</tr>');
-                    });
-                    table += `<tr>
-                <td><input class="form-control" type="text" id="inputdefault" name="reward_name_input"></td>
-                <td><input class="form-control" type="text" id="inputdefault" name="reward_description_input"></td>
-                <td><button type="submit" name="addNewReward" class="btn btn-primary">Add New Reward</button></td>
-            </tr></table>`;
-                    $("#rewardsContainer").html(table);
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert("some error" + errorThrown);
-                }
-            });
-        });
-    </script>
-
     <h1>Chores</h1>
     <div id="choresContainer">
     </div>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $.ajax({
-                dataType: 'json',
-                url: "/getChoreLibraryData",
-                type: 'get',
-
-                success: function (data) {
-                    var i = 0;
-                    var table = '<table class="table"><tr><th>Chore</th><th>Description</th><th>XP</th><th>Reward</th><th>Action</th></tr>';
-                    $.each(data, function (key, obj) {
-
-                        table += ('<tr>');
-                        table += ('<td>' + obj.chore_name + '</td>');
-                        table += ('<td>' + obj.description + '</td>');
-                        table += ('<td>' + obj.xp_reward + '</td>');
-                        table += ('<td>Reward Name</td>');
-                        table += ('<td><button type=\"submit\" class=\"btn btn-danger\" name=$rewardID>Delete</button><span> - </span><button type=\"submit\" class=\"btn btn-warning\" name=$rewardUpdateBtn>Update</button></td>');
-                        table += ('</tr>');
-                    });
-                    table += `<td><input class="form-control" type="text" id="inputdefault" name="chore_name_input"></td>
-                    <td><input class="form-control" type="text" id="inputdefault" name="chore_description_input"></td>
-                    <td><input class="form-control" type="number" id="inputdefault" name="chore_xp_reward_input"></td>
-                    <td><select class="form-control" id="inputdefault" name="rewards_input">
-                    <td><button type="submit" name="addNewChore" class="btn btn-primary">Add New Chore</button></td></table>`;
-                    $("#choresContainer").html(table);
-
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert("some error" + errorThrown);
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
