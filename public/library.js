@@ -74,6 +74,43 @@ function deleteChore(choreID) {
     location.reload(true);
 }
 
+function updateChore(choreID) {
+    console.log("updateChore: " + choreID);
+    console.log("chorexp: " + $("#choreXPUpdate" + choreID).val());
+    var e = document.getElementById("rewards_input" + choreID);
+    $.ajax({
+        url: '/getUpdateChoreLibrary',
+        type: 'post',
+        data: { chore_name: $("#choreNameUpdate" + choreID).val(), description: $("#choreDescriptionUpdate" + choreID).val(), xp_reward: $("#choreXPUpdate" + choreID).val(), reward_library_id: e.value, chore_library_id: choreID },
+        jsonpCallback: 'callback',
+        success: function(data) {
+            console.log(data);
+        },
+        error: function(xhr, status, error) {
+            console.log('Error: ' + error.message);
+        }
+    });
+    location.reload(true);
+}
+
+function updateReward(rewardID) {
+    console.log("updateReward: " + rewardID);
+    $.ajax({
+        url: '/getUpdateRewardLibrary',
+        type: 'post',
+        data: { reward_name: $("#rewardNameUpdate" + rewardID).val(), description: $("#rewardDescriptionUpdate" + rewardID).val(), reward_library_id: rewardID },
+        jsonpCallback: 'callback',
+        success: function(data) {
+            console.log(data);
+        },
+        error: function(xhr, status, error) {
+            console.log('Error: ' + error.message);
+        }
+    });
+    location.reload(true);
+}
+
+
 function fillRewardsDropdown() {
     console.log("fillRewardsDropdown");
     $.ajax({
@@ -82,14 +119,7 @@ function fillRewardsDropdown() {
         type: 'get',
 
         success: function(values) {
-            //console.log(values);
-            //var values = ["dog", "cat", "parrot", "rabbit"];
-            /* for (const val of values) {
-                console.log(val.reward_name);
-            } */
-
             var select = document.getElementById("rewards_input");
-            console.log(select);
 
             for (const val of values) {
                 console.log(val.reward_name);
@@ -99,7 +129,30 @@ function fillRewardsDropdown() {
                 select.appendChild(option);
             }
 
-            document.getElementById("rewards_input").appendChild(select);
+            //document.getElementById("rewards_input").appendChild(select);
+        }
+    })
+}
+
+function fillRewardsDropdownUpdate(rewardsInput) {
+    console.log("fillRewardsDropdownUpdate");
+    $.ajax({
+        dataType: 'json',
+        url: "/getRewardLibraryData",
+        type: 'get',
+
+        success: function(values) {
+            var select = document.getElementById("rewards_input" + rewardsInput);
+
+            for (const val of values) {
+                console.log(val.reward_name);
+                var option = document.createElement("option");
+                option.value = val.reward_library_id;
+                option.text = val.reward_name;
+                select.appendChild(option);
+            }
+
+            //document.getElementById("rewards_input" + rewardsInput).appendChild(select);
         }
     })
 }
@@ -117,9 +170,9 @@ function fillRewardsTable() {
             $.each(data, function(key, obj) {
                 var rewardID = obj.reward_library_id;
                 table += ('<tr>');
-                table += ('<td>' + obj.reward_name + '</td>');
-                table += ('<td>' + obj.description + '</td>');
-                table += ('<td><button type="submit" class="btn btn-danger" name="deleteReward" onclick="deleteReward(' + rewardID + ')">Delete</button><span> - </span><button type="submit" class="btn btn-warning" name=$rewardUpdateBtn>Update</button></td>');
+                table += ('<td><input class="form-control" type="text" id="rewardNameUpdate' + obj.reward_library_id + '" name="rewardNameUpdate' + obj.reward_library_id + '" value="' + obj.reward_name + '"></td>');
+                table += ('<td><input class="form-control" type="text" id="rewardDescriptionUpdate' + obj.reward_library_id + '" name="rewardDescriptionUpdate' + obj.reward_library_id + '" value="' + obj.description + '"</td>');
+                table += ('<td><button type="submit" class="btn btn-danger" name="deleteReward" onclick="deleteReward(' + rewardID + ')">Delete</button><span> - </span><button type="submit" class="btn btn-warning" name=rewardUpdateBtn onclick="updateReward(' + rewardID + ')">Update</button></td>');
                 table += ('</tr>');
             });
             table += `<tr>
@@ -147,11 +200,11 @@ function fillChoresTable() {
             $.each(data, function(key, obj) {
                 var choreID = obj.chore_library_id;
                 table += ('<tr>');
-                table += ('<td>' + obj.chore_name + '</td>');
-                table += ('<td>' + obj.description + '</td>');
-                table += ('<td>' + obj.xp_reward + '</td>');
-                table += ('<td>Reward Name</td>');
-                table += ('<td><button type="submit" class="btn btn-danger" name=deleteChore onclick="deleteChore(' + choreID + ')">Delete</button><span> - </span><button type=\"submit\" class=\"btn btn-warning\" name=$rewardUpdateBtn>Update</button></td>');
+                table += ('<td><input class="form-control" type="text" id="choreNameUpdate' + obj.chore_library_id + '" name="choreNameUpdate' + obj.chore_library_id + '" value="' + obj.chore_name + '"></td>');
+                table += ('<td><input class="form-control" type="text" id="choreDescriptionUpdate' + obj.chore_library_id + '" name="choreDescriptionUpdate' + obj.chore_library_id + '" value="' + obj.description + '"</td>');
+                table += ('<td><input class="form-control" type="number" id="choreXPUpdate' + obj.chore_library_id + '" name="choreXPUpdate' + obj.chore_library_id + '" value="' + obj.xp_reward + '"></td>');
+                table += ('<td><select class="form-control" id="rewards_input' + obj.chore_library_id + '" onclick="fillRewardsDropdownUpdate(' + obj.chore_library_id + '); this.onclick=null;" name="choreRewardUpdate' + obj.chore_library_id + '"><option value="' + obj.reward_library_id + '">' + obj.reward_name + '</option></td>');
+                table += ('<td><button type="submit" class="btn btn-danger" name=deleteChore onclick="deleteChore(' + choreID + ')">Delete</button><span> - </span><button type="submit" class="btn btn-warning" name="updateReward" onclick="updateChore(' + choreID + ')">Update</button></td>');
                 table += ('</tr>');
             });
             table += `<td><input class="form-control" type="text" id="chore_name_input" name="chore_name_input"></td>
@@ -171,5 +224,4 @@ function fillChoresTable() {
 function populatePage() {
     fillRewardsTable();
     fillChoresTable();
-    //fillRewardsDropdown();
 }

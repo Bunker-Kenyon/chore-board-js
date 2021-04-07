@@ -12,7 +12,13 @@ let {
     addToRewardLibrary: addToRewardLibrary,
     deleteFromRewardLibrary: deleteFromRewardLibrary,
     addToChoreLibrary: addToChoreLibrary,
-    deleteFromChoreLibrary: deleteFromChoreLibrary
+    deleteFromChoreLibrary: deleteFromChoreLibrary,
+    updateChoreLibrary: updateChoreLibrary,
+    updateRewardLibrary: updateRewardLibrary,
+    usersInHousehold: usersInHousehold,
+    assignChore: assignChore,
+    completeChore: completeChore,
+    assignUnassigedChores: assignUnassigedChores
 } = require('./models/models.js');
 
 app.use(session({
@@ -37,12 +43,28 @@ app.get('/login', function(request, response) {
     console.log("Going to login");
     response.sendFile(path.join(__dirname + '/public/login.html'));
 });
+app.post('/getCompleteChore', getCompleteChore);
+app.get('/getUsersInHousehold', getUsersInHousehold);
+//app.get('getPopulateChoreBoardData', getPopulateChoreBoardData);
+
 
 app.post('/auth', userLogin);
 app.post('/getAddToRewardLibrary', getAddToRewardLibrary);
 app.post('/getDeleteFromRewardLibrary', getDeleteFromRewardLibrary);
 app.post('/getAddToChoreLibrary', getAddToChoreLibrary);
 app.post('/getDeleteFromChoreLibrary', getDeleteFromChoreLibrary);
+app.post('/getUpdateChoreLibrary', getUpdateChoreLibrary);
+app.post('/getUpdateRewardLibrary', getUpdateRewardLibrary)
+app.post('/getAssignUnassigedChores', getAssignUnassigedChores)
+app.post('/getAssignChore', getAssignChore);
+
+app.get('/logout', function(req, res, next) {
+    // destroy session data
+    req.session = null;
+
+    // redirect to homepage
+    res.redirect('/login');
+});
 
 // Start the server running
 app.listen(app.get('port'), function() {
@@ -74,12 +96,62 @@ function getChores(request, response) {
             response.status(500).json({ success: false, data: error });
         } else {
             const chores = result;
-            response.render('pages/chores', { data: chores, userID: userID });
+            response.render('pages/chores', { chores: chores, userID: userID });
+
         }
     });
 }
 
+/* function getPopulateChoreBoardData(request, response) {
+    console.log("getPopulateChoreBoardData");
+    var householdID = request.session.household_id;
+    var userID = request.session.user_id
+    var chores = null;
+    var choreLibrary = null;
+    var users = null;
 
+    //populate unnassigned chores
+    getChoresFromDb(householdID, userID, function(error, result) {
+
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            chores = result;
+            //console.log(chores);
+            response.render('pages/chores', { chores: chores, choreLibrary: choreLibrary, users: users, userID: userID });
+        }
+    });
+
+    //choose chore
+    getChoreLibraryFromDb(householdID, function(error, result) {
+
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            choreLibrary = result;
+            console.log(choreLibrary);
+            response.render('pages/chores', { choreLibrary: choreLibrary, chores: chores, users: users, userID: userID });
+        }
+    });
+
+    //choose user
+    getUsersInHousehold(householdID, function(error, result) {
+
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            users = result;
+            //console.log(users);
+            //response.send(result);
+        }
+    });
+
+    console.log("getPopulateChoreBoardData: " + chores);
+    console.log("getChoresFromDb: " + choreLibrary);
+    console.log("getUsersInHousehold: " + users);
+    //response.render('pages/chores', { chores: chores, choreLibrary: choreLibrary, users: users, userID: userID });
+
+} */
 
 function getChoreLibrary(request, response) {
     var householdID = request.session.household_id;
@@ -180,6 +252,86 @@ function getDeleteFromChoreLibrary(request, response) {
         } else {
             console.log(result);
             response.redirect('/getChoreLibrary');
+        }
+    });
+}
+
+function getUpdateChoreLibrary(request, response) {
+    console.log("getUpdateChoreLibrary");
+    var choreName = request.body.chore_name;
+    var description = request.body.description;
+    var xpReward = request.body.xp_reward;
+    var rewardLibraryID = request.body.reward_library_id;
+    var choreID = request.body.chore_library_id;
+
+    updateChoreLibrary(choreName, description, xpReward, rewardLibraryID, choreID, function(error, result) {
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            console.log(result);
+            response.redirect('/getChoreLibrary');
+        }
+    });
+}
+
+function getUpdateRewardLibrary(request, response) {
+    console.log("getUpdateRewardLibrary");
+    var rewardName = request.body.reward_name;
+    var description = request.body.description;
+    var rewardLibraryID = request.body.reward_library_id;
+
+    updateRewardLibrary(rewardName, description, rewardLibraryID, function(error, result) {
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            console.log(result);
+            response.redirect('/getChoreLibrary');
+        }
+    });
+}
+
+function getUsersInHousehold(request, response) {
+    //console.log("getUsersInHousehold");
+    var householdID = request.session.household_id;
+    usersInHousehold(householdID, function(error, result) {
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            response.send(result);
+        }
+    });
+}
+
+function getAssignChore(request, response) {
+    console.log("getAssignChore");
+    //console.log("User: " + request.body.user_id)
+    assignChore(request.body.user_id, request.body.chore_library_id, function(error, result) {
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            response.redirect('/getChores');
+        }
+    });
+}
+
+function getCompleteChore(request, response) {
+    console.log("getCompleteChore");
+    completeChore(request.body.chore_id, function(error, result) {
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            response.redirect('/getChores');
+        }
+    });
+}
+
+function getAssignUnassigedChores(request, response) {
+    console.log("getAssignUnassigedChores");
+    assignUnassigedChores(request.body.chore_id, request.body.user_id, function(error, result) {
+        if (error || result == null) {
+            response.status(500).json({ success: false, data: error });
+        } else {
+            response.redirect('/getChores');
         }
     });
 }

@@ -1,8 +1,8 @@
 <h1>Unassigned chores</h1>
 <ul class="sticky">
 
-    <% data.forEach(function(chore) { %>
-        <% if(chore.user_id != null)  { %>
+    <% chores.forEach(function(chore) { %>
+        <% if(chore.user_id == null)  { %>
             <li>
                 <a href="#">
                     <h2>
@@ -15,23 +15,28 @@
                         XP:
                         <%= chore.xp_reward %>
                     </p>
-
+                    <p>
+                        Reward:
+                        <%= chore.reward_name %>
+                    </p>
+                    <label for="users<%= chore.chore_id %>">Choose a User</label>
+                    <select id="users<%= chore.chore_id %>" class="usersdd" name="users<%= chore.chore_id %>"></select><br>
+                    <button id="btn<%= chore.chore_id %>" onclick="assignUnassigedChores(this.id)">Assign Chore</button>
                 </a>
+
             </li>
             <% } %>
                 <% }); %>
                     <li>
                         <a href="#">
-                            <h2>Under Construction</h2>
                             <h2>Assign a Chore from Library</h2>
                             <label for="chores">Choose a chore</label>
-                            <select name="chores"></select><br>
-                            <label for="reward">Choose a Reward</label>
-                            <select name="reward"></select><br>
-                            <label for="user">Choose a User</label>
-                            <select name="user"></select><br>
-
-
+                            <select id="chores" name="chores"></select><br>
+                            <label for="users">Choose a User</label>
+                            <select id="users" name="users">
+                                <option value="unassigned">Leave Unassigned</option>
+                            </select><br>
+                            <button onclick="assignChore()">Assign Chore</button>
                         </a>
                     </li>
 </ul>
